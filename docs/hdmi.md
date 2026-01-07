@@ -1,6 +1,6 @@
 # HDMI Group
 
-Covers the `nvapi-cli hdmi` command group (`src/cli/hdmi.cpp`). `--index N` is required for `hdmi hdcp-diag` and is omitted from the command list and blocks below for brevity. `--id HEX` is required for `hdmi hdcp-diag` and all `hdmi stereo` commands and is omitted from the command list and blocks below for brevity; get it from `display ids`. `--handle-index N` refers to a display handle index from `display list`. If `--output-id` is omitted, the CLI uses `NvAPI_GetAssociatedDisplayOutputId`.
+Covers the `nvapi-cli hdmi` command group (`src/cli/hdmi.cpp`). `--index N` is required for `hdmi hdcp-diag` and is omitted from the command list and blocks below for brevity. `--id HEX` is required for `hdmi hdcp-diag` and all `hdmi stereo` commands and is omitted from the command list and blocks below for brevity, get it from `display ids`. `--handle-index N` refers to a display handle index from `display list`. If `--output-id` is omitted, the CLI uses `NvAPI_GetAssociatedDisplayOutputId`.
 
 ```powershell
 nvapi-cli hdmi support [--handle-index N] [--output-id HEX]
@@ -19,7 +19,7 @@ Uses `NvAPI_GetHDMISupportInfo` (`NV_HDMI_SUPPORT_INFO`) to report HDMI capabili
 
 ```powershell
 --handle-index N # optional display handle index
---output-id HEX # optional outputId or displayId; 0 uses associated output
+--output-id HEX # optional outputId or displayIdl, 0 uses associated output
 # reports EDID 861 extension revision and FRL rates when available
 ```
 
@@ -59,5 +59,5 @@ Uses `NvAPI_SetHDMIAudioStreamMute` (`NV_HDMI_AUDIO_INFO`) to toggle HDMI audio 
 ```powershell
 --handle-index N # display handle index
 --state 0|1 # mute state
---output-id HEX # optional outputId; 0 uses associated output
+--output-id HEX # optional outputId, 0 uses associated output
 ```
