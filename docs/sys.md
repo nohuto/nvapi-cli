@@ -2,7 +2,7 @@
 
 Covers the `nvapi-cli sys` command group (`src/cli/sys.cpp`). `sys smp --default` returns the default SMP values instead of the current values.
 
-```
+```powershell
 nvapi-cli sys gpu-count
 nvapi-cli sys smp [--default]
 nvapi-cli sys chipset-sli
@@ -16,8 +16,8 @@ Uses `NvAPI_SYS_GetGpuCount` (`NV_GPU_COUNT_DATA`) to report the total GPU count
 ## sys smp
 Uses `NvAPI_SYS_GetSMPInfo` (`NV_SMP_INFO`) to report SMP settings such as tilt angle, vertical FOV, and camera mode.
 
-```c
---default // set NV_SMP_INFO::bDefault to fetch defaults
+```powershell
+--default # set NV_SMP_INFO::bDefault to fetch defaults
 ```
 
 ## sys chipset-sli
