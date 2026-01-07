@@ -7,7 +7,7 @@ Note that the documentation is partly parsed from official documentation partly 
 > [!CAUTION]
 > Use the tool with caution when applying control APIs, I'm not responsible for any damage/issues. This tool is in BETA state, bugs may exist.
 
-`assets/nvapi.txt` includes all NVAPI functions referenced by the current source code.`assets/unused_nvapi.txt` includes NVAPI functions present in `nvapi.h` but not referenced by the current version.
+[assets/supported_nvapi.txt](https://github.com/nohuto/nvapi-cli/blob/main/assets/supported_nvapi.txt) includes all NVAPI functions referenced by the current source code. [assets/unsupported_nvapi.txt](https://github.com/nohuto/nvapi-cli/blob/main/assets/unsupported_nvapi.txt) includes NVAPI functions present in `nvapi.h` but not used by the current version.
 
 ## Usage
 
