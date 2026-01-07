@@ -9,12 +9,9 @@ nvapi-cli gpu clocks
 nvapi-cli gpu utilization
 nvapi-cli gpu pstate
 nvapi-cli gpu pstates20
-nvapi-cli gpu pstates20-set --pstate P0 --clock graphics|memory|processor|video --delta-khz N
-nvapi-cli gpu pstates20-set --pstate P0 --voltage core --delta-uv N
+nvapi-cli gpu pstates20-set --pstate P0 (--clock graphics|memory|processor|video --delta-khz N | --voltage core --delta-uv N)
 nvapi-cli gpu pstates20-private
-nvapi-cli gpu pstates20-private-set --pstate P0 --clock-id ID --delta-khz N
-nvapi-cli gpu pstates20-private-set --pstate P0 --voltage-domain core|fb|cold-core|core-nominal|ID --delta-uv N
-nvapi-cli gpu pstates20-private-set --pstate P0 --voltage-domain core|fb|cold-core|core-nominal|ID --target-uv N
+nvapi-cli gpu pstates20-private-set --pstate P0 (--clock-id ID --delta-khz N | --voltage-domain core|fb|cold-core|core-nominal|ID (--delta-uv N | --target-uv N))
 nvapi-cli gpu bus
 nvapi-cli gpu vbios
 nvapi-cli gpu cooler
