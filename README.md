@@ -5,7 +5,7 @@ CLI wrapper around NVIDIA's NVAPI for querying and controlling GPU, display, and
 Note that the documentation is partly parsed from official documentation partly rewritten by myself.
 
 > [!CAUTION]
-> Use the tool with caution when applying control APIs, I'm not responsible for any damage/issues. This tool is in BETA state, bugs may exist.
+> Use the tool with caution when applying control APIs, I'm not responsible for any damage/issues. This tool is in BETA state, bugs may exist. I didn't test each option on my own yet.
 
 [assets/supported_nvapi.txt](https://github.com/nohuto/nvapi-cli/blob/main/assets/supported_nvapi.txt) includes all NVAPI functions referenced by the current source code. [assets/unsupported_nvapi.txt](https://github.com/nohuto/nvapi-cli/blob/main/assets/unsupported_nvapi.txt) includes NVAPI functions present in `nvapi.h` but not used by the current version.
 
