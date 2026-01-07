@@ -1,0 +1,3 @@
+C:/Users/Nohuto/Desktop/nvapi-cli/build/CMakeFiles/nvapi-cli.dir
+C:/Users/Nohuto/Desktop/nvapi-cli/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Nohuto/Desktop/nvapi-cli/build/CMakeFiles/ZERO_CHECK.dir

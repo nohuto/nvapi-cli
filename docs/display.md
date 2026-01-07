@@ -28,7 +28,7 @@ nvapi-cli display feature set [--pan-scan 0|1] [--gdi-primary 0|1]
 nvapi-cli display wide-color get [--range xvycc]
 nvapi-cli display wide-color set --enable 0|1 [--range xvycc]
 nvapi-cli display bpc get
-nvapi-cli display bpc set [--bpc N] [--dither 0|1] [--force-link 0|1] [--force-rg-div 0|1]
+nvapi-cli display bpc set [--bpc default|6|8|10|12|16] [--dither 0|1] [--force-link 0|1] [--force-rg-div 0|1]
 nvapi-cli display blanking get
 nvapi-cli display blanking set --state 0|1 [--persist 0|1]
 nvapi-cli display hdr caps
@@ -216,7 +216,7 @@ Uses `NvAPI_DISP_BpcConfiguration` with `NV_BPC_CONFIG_CMD_GET` to read current 
 Uses `NvAPI_DISP_BpcConfiguration` with `NV_BPC_CONFIG_CMD_SET` to update BPC and related testing flags.
 
 ```powershell
---bpc N # requested bits per component
+--bpc default|6|8|10|12|16 # requested bits per component
 --dither 0|1 # 1 enables dithering (ditherOff = 0)
 --force-link 0|1 # force change at current link config (testing)
 --force-rg-div 0|1 # force RG div mode (testing)

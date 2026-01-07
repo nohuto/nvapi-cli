@@ -19,6 +19,7 @@ nvapi-cli gpu bar
 nvapi-cli gpu ecc status
 nvapi-cli gpu ecc errors [--raw]
 nvapi-cli gpu ecc config
+nvapi-cli gpu ecc set --enable 0|1 [--immediate 0|1] [--clear 0|1]
 nvapi-cli gpu ecc reset --current 0|1 --aggregate 0|1
 nvapi-cli gpu board mfg
 nvapi-cli gpu pcie info
@@ -182,6 +183,15 @@ Uses `NvAPI_GPU_GetECCErrorInfo` / `NvAPI_GPU_GetECCErrorInfoEx` (`NV_GPU_ECC_ER
 
 ## gpu ecc config
 Uses `NvAPI_GPU_GetECCConfigurationInfo` (`NV_GPU_ECC_CONFIGURATION_INFO`) to show stored and default ECC enable state.
+
+## gpu ecc set
+Uses `NvAPI_GPU_SetECCConfiguration` to enable or disable ECC memory reporting on ECC-capable GPUs. On recent drivers this requires Administrator privileges, and the change may not take effect immediately unless `--immediate 1` is supported. By default, disabling ECC clears both current and aggregate ECC counters (set `--clear 0` to keep them).
+
+```powershell
+--enable 0|1 # enable or disable ECC
+--immediate 0|1 # request that the change takes effect immediately
+--clear 0|1 # reset current+aggregate ECC counters after the change (defaults to 1 when disabling)
+```
 
 ## gpu ecc reset
 Uses `NvAPI_GPU_ResetECCErrorInfo` to reset ECC error counters. This clears current and/or aggregate ECC counters depending on the flags passed.
