@@ -1,13 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(nvapi-cli LANGUAGES CXX RC)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-file(GLOB CLI_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_SOURCE_DIR}/src/cli/*.cpp"
-)
+file(GLOB CLI_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/cli/*.cpp")
 
 add_executable(nvapi-cli
     src/nvapi-cli.cpp
@@ -15,14 +9,9 @@ add_executable(nvapi-cli
     ${CLI_SOURCES}
 )
 
-target_include_directories(nvapi-cli PRIVATE
-    "${CMAKE_SOURCE_DIR}/include"
-)
-
-target_compile_definitions(nvapi-cli PRIVATE
-    WIN32
-    NOMINMAX
-)
+target_compile_features(nvapi-cli PRIVATE cxx_std_17)
+target_include_directories(nvapi-cli PRIVATE "${CMAKE_SOURCE_DIR}/include")
+target_compile_definitions(nvapi-cli PRIVATE WIN32 NOMINMAX)
 
 if(MSVC)
     target_compile_options(nvapi-cli PRIVATE /W4 /EHsc)

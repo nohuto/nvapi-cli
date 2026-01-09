@@ -7,6 +7,9 @@ nvapi-cli gpu list
 nvapi-cli gpu memory
 nvapi-cli gpu clocks
 nvapi-cli gpu utilization
+nvapi-cli gpu dynamic-pstates-set --enable 0|1
+nvapi-cli gpu force-pstate --pstate P0|auto [--fallback error|higher|lower]
+nvapi-cli gpu force-pstate-ex --pstate P0|auto [--fallback error|higher|lower] [--async 0|1]
 nvapi-cli gpu pstate
 nvapi-cli gpu pstates20
 nvapi-cli gpu pstates20-set --pstate P0 (--clock graphics|memory|processor|video --delta-khz N | --voltage core --delta-uv N)
@@ -15,6 +18,9 @@ nvapi-cli gpu pstates20-private-set --pstate P0 (--clock-id ID --delta-khz N | -
 nvapi-cli gpu bus
 nvapi-cli gpu vbios
 nvapi-cli gpu cooler
+nvapi-cli gpu cooler-policy get --cooler N [--policy manual|perf|temp-discrete|temp-cont|temp-cont-sw|default]
+nvapi-cli gpu cooler-policy set --cooler N --level-id N --level PCT [--policy manual|perf|temp-discrete|temp-cont|temp-cont-sw|default]
+nvapi-cli gpu cooler-policy restore [--cooler N] [--policy manual|perf|temp-discrete|temp-cont|temp-cont-sw|default]
 nvapi-cli gpu bar
 nvapi-cli gpu ecc status
 nvapi-cli gpu ecc errors [--raw]
@@ -26,6 +32,9 @@ nvapi-cli gpu pcie info
 nvapi-cli gpu pcie switch-errors
 nvapi-cli gpu pcie errors
 nvapi-cli gpu pcie aer
+nvapi-cli gpu pcie aspm-set --enable 0|1
+nvapi-cli gpu pcie width-set --width N
+nvapi-cli gpu pcie speed-set --speed N
 nvapi-cli gpu power
 nvapi-cli gpu power limit
 nvapi-cli gpu power limit-set --limit 0-255|max [--flags HEX]
@@ -37,6 +46,15 @@ nvapi-cli gpu power capping info
 nvapi-cli gpu power capping slowdown
 nvapi-cli gpu power leakage info
 nvapi-cli gpu power leakage status
+nvapi-cli gpu gc6 control --op clear-stats|enable-stats|disable-stats|supported|enabled
+nvapi-cli gpu gc6 force-exit
+nvapi-cli gpu deep-idle state
+nvapi-cli gpu deep-idle set --state enabled|disabled
+nvapi-cli gpu deep-idle stats-mode --mode nh|ve|ssc|fo [--reset 0|1]
+nvapi-cli gpu deep-idle stats
+nvapi-cli gpu oc-scanner start
+nvapi-cli gpu oc-scanner stop
+nvapi-cli gpu oc-scanner revert
 nvapi-cli gpu vf tables
 nvapi-cli gpu vf inject [--flags HEX] [--clk-domain ID --clk-khz N]
    [--volt-domain logic|sram|msvdd|ID --volt-rail N --volt-uv N --volt-min-uv N]
@@ -57,6 +75,7 @@ nvapi-cli gpu perf-limits set --limit-id ID --type disabled|pstate|freq|vpstate 
 nvapi-cli gpu voltage
 nvapi-cli gpu voltage control-set --enable 0|1
 nvapi-cli gpu thermal
+nvapi-cli gpu thermal level
 nvapi-cli gpu thermal slowdown
 nvapi-cli gpu thermal slowdown-set --state enabled|disabled
 nvapi-cli gpu thermal sim [--sensor N]
@@ -112,6 +131,31 @@ Uses `NvAPI_GPU_GetDynamicPstatesInfoEx` (`NV_GPU_DYNAMIC_PSTATES_INFO_EX`) to s
 # domains include GPU, FB, VID, BUS
 ```
 
+## gpu dynamic-pstates-set
+Uses `NvAPI_GPU_EnableDynamicPstates` to enable or disable dynamic Pstates reporting. This toggles whether the driver tracks dynamic Pstate activity used by `gpu utilization`.
+
+```powershell
+--enable 0|1 # enable or disable dynamic Pstates
+```
+
+
+## gpu force-pstate
+Uses `NvAPI_GPU_SetForcePstate` to force the GPU into a specific Pstate. Use `--pstate auto` to release the override and let the driver manage Pstates dynamically.
+
+```powershell
+--pstate P0|auto # target Pstate or auto to release the override
+--fallback error|higher|lower # fallback strategy if the Pstate is unavailable
+```
+
+## gpu force-pstate-ex
+Uses `NvAPI_GPU_SetForcePstateEx` to force a Pstate with additional flags. The optional async flag allows the change to complete after the call returns.
+
+```powershell
+--pstate P0|auto # target Pstate or auto to release the override
+--fallback error|higher|lower # fallback strategy if the Pstate is unavailable
+--async 0|1 # set NV_GPU_PERF_SET_FORCE_PSTATE_FLAGS_ASYNC
+```
+
 ## gpu pstate
 Uses `NvAPI_GPU_GetCurrentPstate` to report current performance Pstate. Pstates are enumerated as `NV_GPU_PERF_PSTATE_P0` through `P15`, with P0 being the highest performance state.
 
@@ -162,6 +206,33 @@ Uses `NvAPI_GPU_GetVbiosVersionString`, `NvAPI_GPU_GetVbiosRevision`, `NvAPI_GPU
 ## gpu cooler
 Uses `NvAPI_GPU_GetCoolerSettings` (`NV_GPU_GETCOOLER_SETTINGS`), `NvAPI_GPU_GetTachReading` to report cooler settings, policies, and tachometer readings. The cooler array includes level limits, policy, target, and control type, tachometer data is reported separately.
 
+
+## gpu cooler-policy get
+Uses `NvAPI_GPU_GetCoolerPolicyTable` (`NV_GPU_COOLER_POLICY_TABLE`) to read the policy table for a cooler. NVAPI documents support for the PERF policy, other policies may return `NVAPI_NOT_SUPPORTED`.
+
+```powershell
+--cooler N # cooler index
+--policy manual|perf|temp-discrete|temp-cont|temp-cont-sw|default # policy table to query
+```
+
+## gpu cooler-policy set
+Uses `NvAPI_GPU_GetCoolerPolicyTable` to load the existing table, updates a single policy level, then calls `NvAPI_GPU_SetCoolerPolicyTable`. Only entries with non-zero levels are applied by NVAPI.
+
+```powershell
+--cooler N # cooler index
+--level-id N # policy level id to update
+--level PCT # new level percent
+--policy manual|perf|temp-discrete|temp-cont|temp-cont-sw|default # policy table to update
+```
+
+## gpu cooler-policy restore
+Uses `NvAPI_GPU_RestoreCoolerPolicyTable` to restore default policy levels. Omit `--cooler` to restore all coolers.
+
+```powershell
+--cooler N # optional cooler index
+--policy manual|perf|temp-discrete|temp-cont|temp-cont-sw|default # policy to restore
+```
+
 ## gpu bar
 Uses `NvAPI_GPU_GetBarInfo` (`NV_GPU_BAR_INFO`) to report BAR sizes and offsets. BAR info returns a count and per-BAR size/offset in bytes, capped by `NV_GPU_MAX_BAR_COUNT`.
 
@@ -185,7 +256,7 @@ Uses `NvAPI_GPU_GetECCErrorInfo` / `NvAPI_GPU_GetECCErrorInfoEx` (`NV_GPU_ECC_ER
 Uses `NvAPI_GPU_GetECCConfigurationInfo` (`NV_GPU_ECC_CONFIGURATION_INFO`) to show stored and default ECC enable state.
 
 ## gpu ecc set
-Uses `NvAPI_GPU_SetECCConfiguration` to enable or disable ECC memory reporting on ECC-capable GPUs. On recent drivers this requires Administrator privileges, and the change may not take effect immediately unless `--immediate 1` is supported. By default, disabling ECC clears both current and aggregate ECC counters (set `--clear 0` to keep them).
+Uses `NvAPI_GPU_SetECCConfiguration` to enable or disable ECC memory reporting on ECC-capable GPUs. Most GeForce cards (including RTX 3070 Ti) will return `NVAPI_NOT_SUPPORTED` because they do not expose ECC configuration. On recent drivers this requires Administrator privileges, and the change may not take effect immediately unless `--immediate 1` is supported. By default, disabling ECC clears both current and aggregate ECC counters (set `--clear 0` to keep them).
 
 ```powershell
 --enable 0|1 # enable or disable ECC
@@ -223,6 +294,28 @@ Uses `NvAPI_GPU_ClearPCIELinkAERInfo` to read and clear PCIe AER error mask. The
 
 ```powershell
 # This call clears counters as part of the query in NVAPI
+```
+
+## gpu pcie aspm-set
+Uses `NvAPI_GPU_ControlASPM` (`NV_GPU_ASPM_CONTROL_DATA`) to enable or disable PCIe ASPM on the GPU. The control struct only carries an enable bit.
+
+```powershell
+--enable 0|1 # enable or disable ASPM
+```
+
+
+## gpu pcie width-set
+Uses `NvAPI_GPU_SetCurrentPCIEWidth` to request a new PCIe lane width. Use `gpu pcie info` to see the current width.
+
+```powershell
+--width N # requested PCIe lane width (lanes)
+```
+
+## gpu pcie speed-set
+Uses `NvAPI_GPU_SetCurrentPCIESpeed` to request a new PCIe link speed in Mbps. Use `gpu pcie info` to see the current speed.
+
+```powershell
+--speed N # requested PCIe speed in Mbps
 ```
 
 ## gpu power
@@ -291,6 +384,49 @@ Uses `NvAPI_GPU_PowerLeakageGetStatus` (`NV_GPU_POWER_LEAKAGE_STATUS_PARAMS`) to
 ```powershell
 # deprecated in nvapi.h, may return NVAPI_NOT_SUPPORTED
 ```
+
+## gpu gc6 control
+Uses `NvAPI_GPU_GC6Control` (`NV_GPU_GC6_CONTROL`) to query or control GC6 statistics and support state. On many desktop GPUs/driver branches GC6 control is not exposed and NVAPI may return `NVAPI_INVALID_ARGUMENT` even for `supported` or `enabled`.
+
+```powershell
+--op clear-stats|enable-stats|disable-stats|supported|enabled
+# supported/enabled use GC6 control queries
+```
+
+## gpu gc6 force-exit
+Uses `NvAPI_GPU_ForceGC6Exit` to request exiting GC6 low-power state on the GPU.
+
+
+## gpu deep-idle state
+Uses `NvAPI_GetLogicalGPUFromPhysicalGPU` and `NvAPI_GPU_GetDeepIdleState` to report deep idle state. This API is deprecated in `nvapi.h` and may return `NVAPI_NOT_SUPPORTED`.
+
+## gpu deep-idle set
+Uses `NvAPI_GPU_SetDeepIdleState` to enable or disable deep idle (deprecated in `nvapi.h`).
+
+```powershell
+--state enabled|disabled # requested deep idle state
+```
+
+## gpu deep-idle stats-mode
+Uses `NvAPI_GPU_SetDeepIdleStatisticsMode` to select the deep idle flavor to track and optionally reset counters.
+
+```powershell
+--mode nh|ve|ssc|fo # deep idle flavor to track
+--reset 0|1 # reset counters for the selected mode
+```
+
+## gpu deep-idle stats
+Uses `NvAPI_GPU_GetDeepIdleStatistics` to read counters for the last selected mode.
+
+## gpu oc-scanner start
+Uses `NvAPI_GPU_ClientStartOcScanner` to start a manual OC scan. This requires consent to GRD OC settings and is only supported on compatible drivers.
+If the driver or board policy does not expose OC Scanner, NVAPI returns `NVAPI_INVALID_CONFIGURATION` even with correct arguments.
+
+## gpu oc-scanner stop
+Uses `NvAPI_GPU_ClientStopOcScanner` to stop a manual OC scan.
+
+## gpu oc-scanner revert
+Uses `NvAPI_GPU_ClientRevertOc` to revert OC settings on the GPU.
 
 ## gpu vf tables
 Uses `NvAPI_GPU_PerfVfTablesGetInfo` (`NV_GPU_PERF_VF_TABLES`) to dump VF table entries per clock domain and voltage. VF tables map pstate/domain ranges to entries, and each entry carries a max frequency and voltage information.
@@ -417,6 +553,9 @@ Uses `NvAPI_GPU_GetThermalSettings` (`NV_GPU_THERMAL_SETTINGS`) to report therma
 ```powershell
 # sensor index 0..NVAPI_MAX_THERMAL_SENSORS_PER_GPU-1 or NVAPI_THERMAL_TARGET_ALL
 ```
+
+## gpu thermal level
+Uses `NvAPI_GPU_GetCurrentThermalLevel` (`NV_EVENT_LEVEL`) to report the current thermal severity level. Levels include normal, warning, and critical.
 
 ## gpu thermal slowdown
 Uses `NvAPI_GPU_GetThermalSlowdownState` to report thermal slowdown state. Slowdown states include enabled and an all-disabled mode that shuts off HW/SW/Pstate slowdown.

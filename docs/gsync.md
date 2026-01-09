@@ -1,6 +1,6 @@
 # GSync Group
 
-Covers the `nvapi-cli gsync` command group (`src/cli/gsync.cpp`). `--index N` is required for most GSync commands and is omitted from the command list and blocks below for brevity, get it from `gsync list`. `--display-id HEX` is required for `gsync sync set` and is omitted from the block below for brevity, get it from `gsync topo` or `display ids`. Many NVAPI structs are versioned in `nvapi.h`, the CLI uses the latest version and falls back on older versions when required.
+Covers the `nvapi-cli gsync` command group (`src/cli/gsync.cpp`). `--index N` is required for most GSync commands and is omitted from the command list and blocks below for brevity, get it from `gsync list`. `--display-id HEX` is required for `gsync sync set`, `gsync sync enable`, and `gsync sync disable` and is omitted from the block below for brevity, get it from `gsync topo` or `display ids`. Many NVAPI structs are versioned in `nvapi.h`, the CLI uses the latest version and falls back on older versions when required.
 
 ```powershell
 nvapi-cli gsync list
@@ -8,6 +8,8 @@ nvapi-cli gsync caps
 nvapi-cli gsync topo
 nvapi-cli gsync sync get
 nvapi-cli gsync sync set --state master|slave|unsynced [--no-validate] [--send-start-event]
+nvapi-cli gsync sync enable --state master|slave
+nvapi-cli gsync sync disable
 nvapi-cli gsync status [--gpu-index N]
 nvapi-cli gsync control get
 nvapi-cli gsync control set [--polarity rising|falling|both] [--video-mode none|ttl|ntsc|hdtv|composite]
@@ -41,6 +43,17 @@ Uses `NvAPI_GSync_GetTopology` to build the current display list, updates the ta
 --no-validate # set NV_SET_SYNC_FLAGS_NO_VALIDATION
 --send-start-event # set NV_SET_SYNC_FLAGS_SEND_START_EVENT
 ```
+
+
+## gsync sync enable
+Uses `NvAPI_GSync_SetSyncStateSettings` to set the display sync state to master or slave.
+
+```powershell
+--state master|slave # desired sync role for the target display
+```
+
+## gsync sync disable
+Uses `NvAPI_GSync_SetSyncStateSettings` to unsynchronize a display.
 
 ## gsync status
 Uses `NvAPI_GSync_GetSyncStatus` (`NV_GSYNC_STATUS`) and `NvAPI_GSync_GetStatusParameters` (`NV_GSYNC_STATUS_PARAMS`) to report timing sync state and house sync parameters. If `--gpu-index` is omitted, the CLI uses the first GPU from the topology.
