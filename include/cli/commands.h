@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "common.h"
+#include "cli/common.h"
 
 namespace nvcli
 {

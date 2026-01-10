@@ -7,7 +7,7 @@
 #include <dxgi.h>
 #include <windows.h>
 
-#include "commands.h"
+#include "cli/commands.h"
 
 #include <vector>
 #include <string>

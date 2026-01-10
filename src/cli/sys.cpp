@@ -3,7 +3,7 @@
  * Proprietary and confidential. Unauthorized copying or redistribution is strictly prohibited.
  */
 
-#include "commands.h"
+#include "cli/commands.h"
 
 #include <cstring>
 

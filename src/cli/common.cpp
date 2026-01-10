@@ -3,7 +3,7 @@
  * Proprietary and confidential. Unauthorized copying or redistribution is strictly prohibited.
  */
 
-#include "common.h"
+#include "cli/common.h"
 
 namespace nvcli
 {

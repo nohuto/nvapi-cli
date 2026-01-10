@@ -5,7 +5,7 @@ file(GLOB CLI_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/cli/*.cpp")
 
 add_executable(nvapi-cli
     src/nvapi-cli.cpp
-    src/nvapi-cli.rc
+    nvapi-cli.rc
     ${CLI_SOURCES}
 )
 
@@ -15,8 +15,8 @@ target_compile_definitions(nvapi-cli PRIVATE WIN32 NOMINMAX)
 
 if(MSVC)
     target_compile_options(nvapi-cli PRIVATE /W4 /EHsc)
-    set_source_files_properties(src/nvapi-cli.rc PROPERTIES
-        COMPILE_FLAGS "/I\"${CMAKE_SOURCE_DIR}/src\""
+    set_source_files_properties(nvapi-cli.rc PROPERTIES
+        COMPILE_FLAGS "/I\"${CMAKE_SOURCE_DIR}\""
     )
 endif()
 
